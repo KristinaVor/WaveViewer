@@ -5,7 +5,9 @@ WaveViewerWindow::WaveViewerWindow(QWidget *parent)
       plot(nullptr),
       udpSocket(nullptr),
       maxValue(nullptr),
-      median(nullptr)
+      median(nullptr),
+      maxValueLabel(nullptr),
+      medianLabel(nullptr)
 {
     this->resize(800, 600);
     this->move(QGuiApplication::primaryScreen()->geometry().center() - this->rect().center());
@@ -42,12 +44,6 @@ WaveViewerWindow::~WaveViewerWindow()
 
     if (plot)
         delete plot;
-
-    if (maxValue)
-        delete maxValue;
-
-    if (median)
-        delete median;
 }
 
 void WaveViewerWindow::readPendingDatagrams()
@@ -101,6 +97,10 @@ void WaveViewerWindow::processData(const QByteArray &data)
     median->start->setCoords(0, m_median); // Обновляем координаты медианы
     median->end->setCoords(samplesAsDouble.size() - 1, m_median);
 
+    // Обновляем текстовые метки
+    updateMaxValueLabel(samplesAsDouble.indexOf(m_maxValue), m_maxValue);
+    updateMedianLabel(m_median);
+
     plot->replot();
 }
 
@@ -145,16 +145,46 @@ void WaveViewerWindow::initMaxValueAndMedianLabels()
     maxValue->setSize(10);
     maxValue->setPen(QPen(Qt::red));
 
+    // Инициализация метки для максимального значения
+    maxValueLabel = new QCPItemText(plot);
+    maxValueLabel->setPositionAlignment(Qt::AlignBottom| Qt::AlignRight);
+    maxValueLabel->position->setType(QCPItemPosition::ptPlotCoords);
+    maxValueLabel->position->setCoords(0, 0); // Координаты максимального значения
+    maxValueLabel->setPen(QPen(Qt::black)); // Установите цвет текста
+
     // Инициализация медианы
     median = new QCPItemLine(plot);
     median->start->setType(QCPItemPosition::ptPlotCoords);
     median->end->setType(QCPItemPosition::ptPlotCoords);
     QPen medianPen;
     medianPen.setColor(Qt::blue);
-    medianPen.setStyle(Qt::DashDotLine); // Используем стиль прерывисто-точечной линии
-    medianPen.setWidth(2); // Устанавливаем ширину линии
+    medianPen.setStyle(Qt::DashDotLine);
+    medianPen.setWidth(2);
     median->setPen(medianPen);
+
+    // Инициализация метки для медианы
+    medianLabel = new QCPItemText(plot);
+    medianLabel->setPositionAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    medianLabel->position->setType(QCPItemPosition::ptPlotCoords);
+    medianLabel->position->setCoords(0, 0); // Координаты медианы
+    medianLabel->setPen(QPen(Qt::black)); // Установите цвет текста
 }
 
+void WaveViewerWindow::updateMaxValueLabel(int x, double value)
+{
+    QString label = QString("Max Value\nx: %1\ny: %2").arg(x).arg(value);
+    double maxYValue = plot->yAxis->range().upper;
+    double labelYPosition = maxYValue * 1;
+    maxValueLabel->position->setCoords(x, labelYPosition);
+    maxValueLabel->setText(label);
+}
 
+void WaveViewerWindow::updateMedianLabel(double value)
+{
+    QString label = QString("Median: %1").arg(value);
+    double labelYPosition = value + 10;
+    double medianX = plot->xAxis->range().center();
+    medianLabel->position->setCoords(medianX, labelYPosition);
+    medianLabel->setText(label);
+}
 

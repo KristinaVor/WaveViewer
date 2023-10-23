@@ -26,13 +26,17 @@ private:
     double calculateMaximumValue(const QVector<short> &data); // Метод для вычисления максимального значения
     double calculateMedian(const QVector<short> &data); // Метод для вычисления медианы
     void initMaxValueAndMedianLabels();
+    void updateMaxValueLabel(int x, double value);
+    void updateMedianLabel(double value);
 
 
     QCustomPlot *plot; // График для отображения кривой
     QUdpSocket *udpSocket; //
     QVector<double> waveData; // Данные кривой
     QCPItemTracer *maxValue; // Метка для отображения максимального значения
-    QCPItemLine *median; // Метка для отображения медианы
+    QCPItemLine *median; // Метка для отображения медианы    
+    QCPItemText *maxValueLabel;
+    QCPItemText *medianLabel;
 };
 
 #endif // WAVEVIEWERWINDOW_H
