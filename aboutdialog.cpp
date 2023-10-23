@@ -18,5 +18,4 @@ AboutDialog::AboutDialog(QWidget *parent)
 
 AboutDialog::~AboutDialog()
 {
-    // Деструктор окна "О программе" здесь
 }

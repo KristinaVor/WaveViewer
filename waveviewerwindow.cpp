@@ -1,7 +1,11 @@
 #include "waveviewerwindow.h"
 
 WaveViewerWindow::WaveViewerWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+      plot(nullptr),
+      udpSocket(nullptr),
+      maxValue(nullptr),
+      median(nullptr)
 {
     this->resize(800, 600);
     this->move(QGuiApplication::primaryScreen()->geometry().center() - this->rect().center());
@@ -13,9 +17,6 @@ WaveViewerWindow::WaveViewerWindow(QWidget *parent)
     plot->yAxis->setLabel("Значение сэмпла");
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     plot->resize(700, 500);
-
-    // Инициализация меток для отображения максимального значения и медианы
-    initMaxValueAndMedianLabels();
 
     // Размещение виджетов на главном окне
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -29,11 +30,24 @@ WaveViewerWindow::WaveViewerWindow(QWidget *parent)
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(QHostAddress::LocalHost, 10002); // Устанавливаем IP-адрес и порт для приема данных
     connect(udpSocket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+
+    // Инициализация меток для отображения максимального значения и медианы
+    initMaxValueAndMedianLabels();
 }
 
 WaveViewerWindow::~WaveViewerWindow()
 {
-    // Деструктор окна просмотра волн здесь
+    if (udpSocket)
+        delete udpSocket;
+
+    if (plot)
+        delete plot;
+
+    if (maxValue)
+        delete maxValue;
+
+    if (median)
+        delete median;
 }
 
 void WaveViewerWindow::readPendingDatagrams()

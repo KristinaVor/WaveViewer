@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-
 #include "waveviewerwindow.h"
 #include "aboutdialog.h"
 
