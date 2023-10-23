@@ -83,9 +83,9 @@ void WaveViewerWindow::processData(const QByteArray &data)
     double m_median = calculateMedian(samples);
 
     // Обновляем максимальное значение и медиану
-    maxValue->setGraphKey(m_maxValue);  // Обновляем координаты максимального значения
-    median->start->setCoords(0, m_median);// Обновляем координаты медианы
-    median->end->setCoords(samples.size() - 1, m_median);
+    maxValue->setGraphKey(samplesAsDouble.indexOf(m_maxValue)); // Ищем координату максимального значения
+    median->start->setCoords(0, m_median); // Обновляем координаты медианы
+    median->end->setCoords(samplesAsDouble.size() - 1, m_median);
 
     plot->replot();
 }
