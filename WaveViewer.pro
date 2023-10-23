@@ -1,6 +1,7 @@
 QT       += core gui
+QT += network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++11
 
@@ -12,11 +13,13 @@ SOURCES += \
     aboutdialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    qcustomplot.cpp \
     waveviewerwindow.cpp
 
 HEADERS += \
     aboutdialog.h \
     mainwindow.h \
+    qcustomplot.h \
     waveviewerwindow.h
 
 FORMS +=
