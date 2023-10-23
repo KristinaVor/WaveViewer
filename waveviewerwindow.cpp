@@ -80,7 +80,7 @@ void WaveViewerWindow::processData(const QByteArray &data)
     waveData.clear();
     waveData.append(samplesAsDouble);
 
-    // Очистите данные графика перед установкой новых данных
+    // Очистим данные графика перед установкой новых данных
     plot->graph(0)->data()->clear();
     for (int i = 0; i < samplesAsDouble.size(); ++i)
     {
