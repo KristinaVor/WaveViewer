@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QLabel>
 #include <QUdpSocket>
 
 #include "qcustomplot.h"
@@ -21,16 +20,19 @@ public:
 
 private slots:
     void processData(const QByteArray &data); // Слот для обработки данных по сетевому протоколу
+    void readPendingDatagrams(); // Слот для чтения данных по сетевому протоколу
 
 private:
     double calculateMaximumValue(const QVector<short> &data); // Метод для вычисления максимального значения
     double calculateMedian(const QVector<short> &data); // Метод для вычисления медианы
+    void initMaxValueAndMedianLabels();
 
 
     QCustomPlot *plot; // График для отображения кривой
+    QUdpSocket *udpSocket; //
     QVector<double> waveData; // Данные кривой
-    QLabel *maxValueLabel; // Метка для отображения максимального значения
-    QLabel *medianLabel; // Метка для отображения медианы
+    QCPItemTracer *maxValue; // Метка для отображения максимального значения
+    QCPItemLine *median; // Метка для отображения медианы
 };
 
 #endif // WAVEVIEWERWINDOW_H
